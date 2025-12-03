@@ -13,3 +13,5 @@ Be very careful turning input separation off with the PRASS because it's a lag m
 I will only bother with these if other people want to do no-ae2 runs.
 - Infinite multi-slot output hatch for EOH, and re-instating the 1-output hatch restriction
 - Add recipe locking to more multiblocks to save tps
+- Functionally disable AE2 and/or crafting recipes
+- Make each change configurable, e.g. if you only want the input separation tweak

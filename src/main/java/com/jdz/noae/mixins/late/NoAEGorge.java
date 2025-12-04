@@ -1,5 +1,8 @@
 package com.jdz.noae.mixins.late;
 
+import static tectech.thing.metaTileEntity.multi.godforge.upgrade.ForgeOfGodsUpgrade.CD;
+import static tectech.thing.metaTileEntity.multi.godforge.upgrade.ForgeOfGodsUpgrade.EE;
+
 import java.util.ArrayList;
 
 import net.minecraft.item.ItemStack;
@@ -9,9 +12,10 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 import gregtech.api.interfaces.tileentity.IGregTechTileEntity;
-import tectech.thing.metaTileEntity.multi.MTEForgeOfGods;
 import tectech.thing.metaTileEntity.multi.base.TTMultiblockBase;
-import tectech.thing.metaTileEntity.multi.godforge_modules.MTEBaseModule;
+import tectech.thing.metaTileEntity.multi.godforge.MTEBaseModule;
+import tectech.thing.metaTileEntity.multi.godforge.MTEForgeOfGods;
+import tectech.thing.metaTileEntity.multi.godforge.upgrade.ForgeOfGodsUpgrade;
 
 @Mixin(MTEForgeOfGods.class)
 abstract class NoAEGorge extends TTMultiblockBase {
@@ -28,6 +32,8 @@ abstract class NoAEGorge extends TTMultiblockBase {
     int ringAmount;
     @Shadow(remap = false)
     public ArrayList<MTEBaseModule> moduleHatches;
+    @Shadow(remap = false)
+    private boolean isRendererDisabled;
 
     private static final String STRUCTURE_PIECE_MAIN = "main";
     private static final String STRUCTURE_PIECE_SHAFT = "beam_shaft";
@@ -44,7 +50,7 @@ abstract class NoAEGorge extends TTMultiblockBase {
     private void createRenderer() {}
 
     @Shadow(remap = false)
-    private void UpdateRenderer() {}
+    private void updateRenderer() {}
 
     @Shadow(remap = false)
     private void destroySecondRing() {}
@@ -59,7 +65,7 @@ abstract class NoAEGorge extends TTMultiblockBase {
     private void buildThirdRing() {}
 
     @Shadow(remap = false)
-    private boolean isUpgradeActive(int upgradeID) {
+    private boolean isUpgradeActive(ForgeOfGodsUpgrade upgrade) {
         return true;
     }
 
@@ -77,9 +83,10 @@ abstract class NoAEGorge extends TTMultiblockBase {
             return false;
         }
 
-        if (internalBattery != 0 && !isRenderActive) {
+        if (internalBattery != 0 && !isRenderActive && !isRendererDisabled) {
             createRenderer();
         }
+
         // Check there is 1 input bus
         if (mInputBusses.size() != 1) {
             return false;
@@ -92,11 +99,11 @@ abstract class NoAEGorge extends TTMultiblockBase {
 
         // Make sure there are no energy hatches
         {
-            if (mEnergyHatches.size() > 0) {
+            if (!mEnergyHatches.isEmpty()) {
                 return false;
             }
 
-            if (mExoticEnergyHatches.size() > 0) {
+            if (!mExoticEnergyHatches.isEmpty()) {
                 return false;
             }
         }
@@ -106,11 +113,13 @@ abstract class NoAEGorge extends TTMultiblockBase {
             return false;
         }
 
-        if (isUpgradeActive(26)) {
+        if (isUpgradeActive(CD)) {
             if (checkPiece(STRUCTURE_PIECE_SECOND_RING, 55, 11, -67)) {
                 ringAmount = 2;
-                destroySecondRing();
-                UpdateRenderer();
+                if (!isRendererDisabled) {
+                    destroySecondRing();
+                    updateRenderer();
+                }
             }
             if (isRenderActive && ringAmount >= 2 && !checkPiece(STRUCTURE_PIECE_SECOND_RING_AIR, 55, 11, -67)) {
                 destroyRenderer();
@@ -121,16 +130,20 @@ abstract class NoAEGorge extends TTMultiblockBase {
             }
             if (ringAmount >= 2) {
                 ringAmount = 1;
-                UpdateRenderer();
+                if (!isRendererDisabled) {
+                    updateRenderer();
+                }
                 buildSecondRing();
             }
         }
 
-        if (isUpgradeActive(29)) {
+        if (isUpgradeActive(EE)) {
             if (checkPiece(STRUCTURE_PIECE_THIRD_RING, 47, 13, -76)) {
                 ringAmount = 3;
-                destroyThirdRing();
-                UpdateRenderer();
+                if (!isRendererDisabled) {
+                    destroyThirdRing();
+                    updateRenderer();
+                }
             }
             if (isRenderActive && ringAmount == 3 && !checkPiece(STRUCTURE_PIECE_THIRD_RING_AIR, 47, 13, -76)) {
                 destroyRenderer();
@@ -138,7 +151,9 @@ abstract class NoAEGorge extends TTMultiblockBase {
         } else {
             if (ringAmount == 3) {
                 ringAmount = 2;
-                UpdateRenderer();
+                if (!isRendererDisabled) {
+                    updateRenderer();
+                }
                 buildThirdRing();
             }
         }

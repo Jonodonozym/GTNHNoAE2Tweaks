@@ -6,12 +6,14 @@ I made this GTNH add-on to help facilitate my No-AE2 challenge run
 - EOH no longer requires an ME output bus or ME hatch, and can have unlimited output hatches.
 - Gorge no longer requires an me output bus
 - Added input separation toggle to Industrial Press and Precise Assembler multiblocks.
+- Made Linked Input Bus compatible with Assembly Line and AAL
+  - I believe this to be a bug not intentional, since for LIB the circuit slot is slot 0 rather than the last slot like the rest of the input bus types, and so it's submitted to the recipe instead of the bus contents.
 
 Be very careful turning input separation off with the PRASS because it's a lag monster. Try to limit yourself to 1 recipe per PRASS, and restrict your input bus sizes where reasonable.
 
 # TODO
 I will only bother with these if other people want to do no-ae2 runs.
-- Infinite multi-slot output hatch for EOH, and re-instating the 1-output hatch restriction
+- Infinite multi-slot output hatch for EOH, and re-instating the 1-output hatch restriction (no cheaping out on expensive casing)
 - Add recipe locking to more multiblocks to save tps
 - Functionally disable AE2 and/or crafting recipes
 - Make each change configurable, e.g. if you only want the input separation tweak

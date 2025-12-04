@@ -20,7 +20,11 @@ public class LateMixinsLoader implements ILateMixinLoader {
     @Nonnull
     @Override
     public List<String> getMixins(Set<String> loadedMods) {
-        return Arrays
-            .asList("InputSeparationIndustrialPress", "InputSeparationPreciseAssembler", "NoAEEOH", "NoAEGorge");
+        return Arrays.asList(
+            "InputSeparationIndustrialPress",
+            "InputSeparationPreciseAssembler",
+            "NoAEEOH",
+            "NoAEGorge",
+            "LinkedInputBusAALCompat");
     }
 }
